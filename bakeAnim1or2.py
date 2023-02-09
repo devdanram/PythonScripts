@@ -2,7 +2,7 @@
 
 #SCRIPT NAME Bake Animation in 1s or 2s
 # CREATOR     Daniel Ramirez
-# SOURCE 
+# SOURCE      how to run the script go to README
 
 # DESCRIPTION
 you can bake a control animated into 1s or 2s
@@ -15,11 +15,6 @@ None
 # VERSIONS 2022 / 0.1.0: first version
 # TODO bugs
 
----------------------------------------
-Add this script to a shelf and add this 
-
-import bakeAnim1or2
-bakeAnim1or2.doBakeAnim1or2()
 
 """
 
