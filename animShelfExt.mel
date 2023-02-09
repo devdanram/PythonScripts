@@ -1,0 +1,27 @@
+global proc animShelfExt_bakeAnim12( string $parent)
+{
+    shelfButton
+        -enable 1
+        -width 34
+        -height 34
+        -label "bakeAnim1or2"
+        -annotation "bake Animation 1 or 2s"
+        -marginWidth 1
+        -marginHeight 1
+        -sourceType "python"
+        -command "runAnim()";
+}
+
+global proc animShelfExt_createSel( string $parent)
+{
+    shelfButton
+        -enable 1
+        -width 34
+        -height 34
+        -label "createSelection"
+        -annotation "Create Selections"
+        -marginWidth 1
+        -marginHeight 1
+        -sourceType "python"
+        -command "runSelection)";
+}
