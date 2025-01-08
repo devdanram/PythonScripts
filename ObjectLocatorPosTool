@@ -1,0 +1,129 @@
+ 
+'''
+#SCRIPT BG Locator Tool
+
+# CREATOR     Daniel Ramirez
+# SOURCE      https://www.danielramirez.work
+# DESCRIPTION
+#  Creates a master locator in the center of the objects selected with the name of the objects adding _Loc
+#  and creates a locator in the objects selected and export the locators
+# the second part import the locators and select all the locators except the main and when you select press the button
+# and the characters or objects will go to the position of the locator that has the same name
+# USAGE  select all the curves first you want to position, then create the locators with the button of PART 1, then export and then import and then select all locators imported except main and press button part 2
+# LINKS
+# FEATURES
+# VERSIONS 2025 / 0.1.0: first version
+# TODO bugs
+
+
+import maya.cmds as cmds
+import re
+
+def createLocators(*args):
+    
+    #saves the selection to sel
+    sel = cmds.ls(sl=True)
+    
+    #declare variables num and list grpLocs
+    num = 0
+    grpLocs = []
+    locSc = 5
+    MSR = ':MoveScaleRotate'
+    posYConst = -1669.822
+    #iterate the selection one by one to add a locator and constraints to the curve selected
+    for eachCurve in sel:
+        nameObj = eachCurve.partition(':')[0]
+        nombreLoc = nameObj + "_Loc"
+        locCurve = cmds.spaceLocator(n= nombreLoc)
+        cmds.scale( locSc, locSc, locSc )
+        
+        grpLocs.append(locCurve)
+        #here moves the locator to the curve
+        consObj = cmds.parentConstraint(eachCurve,locCurve)
+        cmds.delete(consObj)
+        consObj = cmds.parentConstraint(locCurve,eachCurve)
+        num = num + 1
+    print(sel)
+    print(len(sel))
+    print(num)    
+    if len(sel) == num:
+        #here starts the code to find the center of the curves selected
+        count = len(sel)
+        sums = [0,0,0]
+        for item in sel:
+            # gets the position of each item and creates a sum of all items per position X, Y and Z
+            pos = cmds.xform(item, q=True, t=True)
+            sums[0] += pos[0]
+            #sums[1] += pos[1]
+            posYTemp = pos[1]
+            sums[2] += pos[2]
+            #creates the center with all the sums and makes a division and creates a postiion in XYZ
+        center = [sums[0]/count, sums[1]/count, sums[2]/count]
+        posX = float(center[0])
+        posY = float(posYTemp)
+        posZ = float(center[2])
+        print (posX)
+        #print (center[1])
+        print (posZ)
+        #creates the Main Locator to move everything
+        locMain = cmds.spaceLocator(n="locMainTRS")
+        #moves the Main Locator to the center of the selection
+        cmds.move( posX, posY, posZ )
+    			
+        #---------------------------------
+        #you can change the scale of the locators for each curve in locSc = #
+    			
+        cmds.scale( locSc, locSc, locSc )
+            
+            
+        print (grpLocs)
+        #here every locator from the curve is constrained to the main Locator
+        for eachLoc in grpLocs:
+            cmds.parent(eachLoc,locMain)
+            #MainConst0 = cmds.parentConstraint(locMain,eachLoc,maintainOffset=True)
+def positionExtras(*args):
+    #saves the selection to sel
+    sel = cmds.ls(sl=True)
+    #print(sel)
+    MSR = ":" + "MoveScaleRotate"
+    
+    
+    for eachCurve in sel:
+        print(eachCurve)
+        nameObj = eachCurve.partition('_Loc')[0]
+        print(nameObj)
+        nombreLoc = nameObj + MSR
+        print(nombreLoc)
+    
+        consObjPos = cmds.parentConstraint(eachCurve,nombreLoc)
+        
+        cmds.delete(consObjPos)
+        
+        
+# Simple UI to create the window
+window = cmds.window(title="BG Locator Tool", widthHeight=(320, 240))
+cmds.columnLayout(adjustableColumn=True)
+cmds.text(label="PART 1", align='center', height=20)
+cmds.text(label="Select all the curves from the EXTRAS", align='center', height=20)
+cmds.text(label="and press CREATE LOCATORS", align='center', height=20)
+cmds.button(label="CREATE LOCATORS", command=createLocators, height=40)
+
+cmds.text(label="PART 2", align='center', height=20)
+cmds.text(label="Import locators to scene without namespace of file", align='center', height=20)
+cmds.text(label="and press POSITION BG without selecting anything", align='center', height=20)
+cmds.button(label="POSITION BG", command=positionExtras, height=40)
+
+#keysDesplazar = cmds.textField()
+
+#cmds.text(label="Specify the frame range:", align='center', height=20)
+#cmds.rowLayout(numberOfColumns=4, adjustableColumn=2)
+#cmds.text(label="Start Frame:")
+#startFrameField = cmds.textField()
+#cmds.text(label="End Frame:")
+#endFrameField = cmds.textField()
+#cmds.setParent('..')
+
+
+cmds.button(label="Close", command=lambda _: cmds.deleteUI(window, window=True), height=30)
+
+cmds.showWindow(window)
