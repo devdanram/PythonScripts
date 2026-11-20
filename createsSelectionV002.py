@@ -13,7 +13,7 @@ press the button like the square and to erase it select the trash can button
 None
 # FEATURES
  
-# VERSIONS 2022 / 0.1.0: first version
+# VERSIONS 2022 / 0.2.0: second version
 # TODO bugs
  
 """
